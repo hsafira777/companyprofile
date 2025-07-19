@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Logo from "./logo";
 import useAuthStore from "@/store/auth/authStore";
 
@@ -15,7 +16,15 @@ const navLinks = [
 
 const Navbar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
   const user = useAuthStore((state) => state.user);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  const handleLogout = () => {
+    clearAuth();
+    router.push("/login");
+  };
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-50">
@@ -41,9 +50,17 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <span className="text-sm text-gray-600 hidden md:inline">
-              Hi, {user.firstname || user.lastname}
-            </span>
+            <>
+              <span className="text-sm text-gray-600 hidden md:inline">
+                Hello there, {user.firstname || user.lastname}!
+              </span>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm rounded-md transition-all"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link
               href="/login"
