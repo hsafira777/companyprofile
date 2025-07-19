@@ -23,7 +23,7 @@ export default function LoginPage() {
           lastname: 'Doe',
         };
         onLoginSuccess(user);
-        router.push('/blogs');
+        router.push('/blogs/create');
       } else {
         throw new Error('Invalid credentials');
       }
@@ -38,7 +38,7 @@ export default function LoginPage() {
         onSubmit={handleLogin}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
       >
-        <h2 className="text-xl font-bold text-center">Login</h2>
+        <h2 className="text-indigo-600 text-xl font-bold text-center">Login</h2>
 
         {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
@@ -70,12 +70,12 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
         >
           Login
         </button>
 
-        <p className="text-sm text-blue-600 mt-4 text-center">
+        <p className="text-sm text-indigo-600 mt-4 text-center">
           👉 Use <strong>user@gmail.com</strong> and{" "}
           <strong>password123</strong> as credentials!
         </p>

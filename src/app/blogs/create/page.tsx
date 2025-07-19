@@ -1,62 +1,95 @@
 "use client";
 
+import { useState } from "react";
+import axios from "axios";
+import useAuthStore from "@/store/auth/authStore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Backendless from "@/app/lib/backendless";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
-export default function CreateBlogPage() {
+const CreatePostPage = () => {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const { user, isLogin } = useAuthStore();
 
-  useEffect(() => {
-    Backendless.UserService.getCurrentUser().then((u) => {
-      if (!u) return router.push("/login");
-      setUser(u);
-    });
-  }, [router]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [tags, setTags] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const formik = useFormik({
-    initialValues: { title: "", content: "", tags: "" },
-    validationSchema: Yup.object({
-      title: Yup.string().required("Title required"),
-      content: Yup.string().required("Content required"),
-    }),
-    onSubmit: async (values) => {
-      await Backendless.Data.of("Blog Posts").save({
-        ...values,
-        author: user,
-      });
+  if (!isLogin || !user) {
+    return <p className="text-center mt-8">Please log in to create a post.</p>;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const postPayload = {
+        title: title.trim(),
+        content: content.trim(),
+        author: `${user.firstname} ${user.lastname}`,
+        tags: tags.trim(),
+      };
+
+      console.log("Sending to Backendless:", postPayload);
+
+      const response = await axios.post(
+        "https://settledhall-us.backendless.app/api/data/Posts",
+        postPayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Backendless response:", response.data);
       router.push("/blogs");
-    },
-  });
+    } catch (err: any) {
+      console.error("Error creating post:", err.response?.data || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form
-      onSubmit={formik.handleSubmit}
-      className="max-w-xl mx-auto space-y-4 mt-10"
-    >
-      <input
-        type="text"
-        {...formik.getFieldProps("title")}
-        className="border w-full p-2"
-        placeholder="Blog Title"
-      />
-      <textarea
-        {...formik.getFieldProps("content")}
-        className="border w-full p-2 h-40"
-        placeholder="Write your blog..."
-      />
-      <input
-        type="text"
-        {...formik.getFieldProps("tags")}
-        className="border w-full p-2"
-        placeholder="Tags (optional)"
-      />
-      <button type="submit" className="bg-green-600 text-white px-4 py-2">
-        Submit
-      </button>
-    </form>
+    <div className="max-w-xl mx-auto mt-10 p-6 border rounded-2xl shadow-md">
+      <h2 className="text-2xl font-bold mb-4">Create New Blog Post</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Title"
+          className="border p-2 rounded"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+
+        <textarea
+          placeholder="Content"
+          className="border p-2 rounded min-h-[200px]"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="Tags (optional, comma-separated)"
+          className="border p-2 rounded"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? "Posting..." : "Post"}
+        </button>
+      </form>
+    </div>
   );
-}
+};
+
+export default CreatePostPage;

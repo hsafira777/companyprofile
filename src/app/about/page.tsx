@@ -3,7 +3,6 @@
 export default function AboutPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-20 space-y-20">
-      {/* Company History */}
       <section>
         <h1 className="text-4xl font-bold mb-4 text-indigo-700">About Us</h1>
         <p className="text-gray-700 text-lg leading-relaxed">
@@ -18,7 +17,6 @@ export default function AboutPage() {
         </p>
       </section>
 
-      {/* Company Culture */}
       <section>
         <h2 className="text-3xl font-bold text-indigo-700 mb-6">Our Culture</h2>
         <p className="text-gray-700 text-lg leading-relaxed">
