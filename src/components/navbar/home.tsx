@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Backendless from "@/app/lib/backendless";
+import { usePathname } from "next/navigation";
 import Logo from "./logo";
+import useAuthStore from "@/store/auth/authStore";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -16,22 +15,7 @@ const navLinks = [
 
 const Navbar = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const currentUser = await Backendless.UserService.getCurrentUser();
-      setUser(currentUser);
-    };
-    fetchUser();
-  }, []);
-
-  const handleLogout = async () => {
-    await Backendless.UserService.logout();
-    setUser(null);
-    router.push("/login");
-  };
+  const user = useAuthStore((state) => state.user);
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-50">
@@ -39,17 +23,17 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <Logo />
           <nav className="hidden md:flex gap-6">
-            {navLinks.map((link) => (
+            {navLinks.map(({ name, href }) => (
               <Link
-                key={link.href}
-                href={link.href}
+                key={href}
+                href={href}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  pathname === link.href
+                  pathname === href
                     ? "bg-blue-100 text-blue-700 font-semibold"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                {link.name}
+                {name}
               </Link>
             ))}
           </nav>
@@ -57,17 +41,9 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <>
-              <span className="text-sm text-gray-600 hidden md:inline">
-                Hi, {user.name || user.email}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm rounded-md transition-all"
-              >
-                Logout
-              </button>
-            </>
+            <span className="text-sm text-gray-600 hidden md:inline">
+              Hi, {user.firstname || user.lastname}
+            </span>
           ) : (
             <Link
               href="/login"

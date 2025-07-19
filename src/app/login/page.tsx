@@ -1,95 +1,85 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useAuthStore from '@/store/auth/authStore';
 
-const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function LoginPage() {
   const router = useRouter();
+  const { onLoginSuccess } = useAuthStore();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (email === "test@example.com" && password === "password") {
-      alert("Login successful!");
-      router.push("/dashboard");
-    } else {
-      alert("Invalid credentials (try test@example.com / password)");
+    try {
+      if (email === 'user@gmail.com' && password === 'password123') {
+        const user = {
+          email,
+          firstname: 'John',
+          lastname: 'Doe',
+        };
+        onLoginSuccess(user);
+        router.push('/blogs');
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "80vh",
-        backgroundColor: "#f9f9f9",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "30px",
-          borderRadius: "10px",
-          boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
-          width: "100%",
-          maxWidth: "400px",
-        }}
+    <main className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md space-y-4"
       >
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Login</h2>
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: "16px" }}>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-              }}
-            />
-          </div>
-          <div style={{ marginBottom: "20px" }}>
-            <label>Password:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-              }}
-            />
-          </div>
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "12px",
-              backgroundColor: "#0070f3",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Log In
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
+        <h2 className="text-xl font-bold text-center">Login</h2>
 
-export default LoginPage;
+        {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+
+        <div>
+          <label className="block mb-1 text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          Login
+        </button>
+
+        <p className="text-sm text-blue-600 mt-4 text-center">
+          👉 Use <strong>user@gmail.com</strong> and{" "}
+          <strong>password123</strong> as credentials!
+        </p>
+      </form>
+    </main>
+  );
+}
