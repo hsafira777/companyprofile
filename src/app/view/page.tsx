@@ -1,6 +1,13 @@
-"use client";
-
 import Link from "next/link";
+
+export const metadata = {
+  title: "Digitech | Web Solutions for the Digital Age",
+  description:
+    "Digitech provides cutting-edge web and mobile solutions to elevate your digital presence. Explore our blog, services, and innovations.",
+  keywords: ["Digitech", "web development", "digital solutions", "tech company", "Next.js"],
+  authors: [{ name: "Digitech" }],
+  robots: "index, follow",
+};
 
 export default function HomePage() {
   return (

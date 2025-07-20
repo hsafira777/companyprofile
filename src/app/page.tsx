@@ -1,12 +1,20 @@
-"use client";
-
 import Link from "next/link";
+
+export const metadata = {
+  title: "Digitech | Web Solutions for the Digital Age",
+  description:
+    "Digitech provides cutting-edge web and mobile solutions to elevate your digital presence. Explore our blog, services, and innovations.",
+  keywords: ["Digitech", "web development", "digital solutions", "tech company", "Next.js"],
+  authors: [{ name: "Digitech" }],
+  robots: "index, follow",
+};
 
 export default function HomePage() {
   return (
-    <main className="space-y-24">
+    <main className="space-y-24 bg-white">
+      {/* Hero Section */}
       <section
-        className="relative flex items-center justify-center min-h-[600px] bg-cover bg-center text-white"
+        className="relative flex items-center justify-center h-[100vh] bg-cover bg-center text-white"
         style={{ backgroundImage: "url('/building.jpg')" }}
       >
         <div className="bg-black/50 absolute inset-0 z-0" />
@@ -29,7 +37,7 @@ export default function HomePage() {
       {/* Company Overview */}
       <section className="max-w-6xl mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold mb-6">Who We Are</h2>
-        <p className="text-gray-600 max-w-3xl mx-auto">
+        <p className="text-gray-600 max-w-3xl mx-auto leading-relaxed">
           Our team is a collective of passionate creatives and developers with a
           mission to make digital experiences beautiful, functional, and
           impactful. With years of experience, we empower businesses with
