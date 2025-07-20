@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import useAuthStore from "@/store/auth/authStore";
 import { useRouter } from "next/navigation";
+
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 const CreatePostPage = () => {
   const router = useRouter();
   const { user, isLogin } = useAuthStore();
 
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string | undefined>("");
   const [tags, setTags] = useState("");
   const [postDate, setPostDate] = useState(() => {
     const today = new Date();
@@ -29,7 +35,7 @@ const CreatePostPage = () => {
     try {
       const postPayload = {
         title: title.trim(),
-        content: content.trim(),
+        content: (content || "").trim(),
         author: `${user.firstname} ${user.lastname}`,
         tags: tags.trim(),
         createdAt: new Date(postDate),
@@ -70,13 +76,9 @@ const CreatePostPage = () => {
           required
         />
 
-        <textarea
-          placeholder="Content"
-          className="border p-2 rounded min-h-[200px]"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
+        <div className="border rounded p-2 min-h-[200px] bg-white">
+          <MDEditor value={content} onChange={setContent} height={300} />
+        </div>
 
         <input
           type="text"
