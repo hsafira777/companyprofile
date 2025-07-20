@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import useAuthStore from "@/store/auth/authStore";
@@ -24,9 +24,13 @@ const CreatePostPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  if (!isLogin || !user) {
-    return <p className="text-center mt-8">Please log in to create a post.</p>;
-  }
+  useEffect(() => {
+    if (!isLogin || !user) {
+      router.push("/login");
+    }
+  }, [isLogin, user, router]);
+
+  if (!isLogin || !user) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +45,6 @@ const CreatePostPage = () => {
         createdAt: new Date(postDate),
       };
 
-      console.log("Sending to Backendless:", postPayload);
-
       const response = await axios.post(
         "https://settledhall-us.backendless.app/api/data/Posts",
         postPayload,
@@ -53,7 +55,6 @@ const CreatePostPage = () => {
         }
       );
 
-      console.log("Backendless response:", response.data);
       router.push("/blogs");
     } catch (err: any) {
       console.error("Error creating post:", err.response?.data || err.message);
