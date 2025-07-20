@@ -23,7 +23,7 @@ export default function LoginPage() {
           lastname: 'Doe',
         };
         onLoginSuccess(user);
-        router.push('/blogs/create');
+        router.push('/view');
       } else {
         throw new Error('Invalid credentials');
       }

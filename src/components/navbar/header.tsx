@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "./logo";
 import useAuthStore from "@/store/auth/authStore";
+import { LogOut } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -57,11 +59,21 @@ const Navbar = () => {
               <span className="text-sm text-indigo-700 font-semibold hidden md:inline">
                 Hello there, {user.firstname}!
               </span>
+
+              <Link
+                href="/blogs/create"
+                className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 text-sm rounded-md transition-all flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Blog</span>
+              </Link>
+
               <button
                 onClick={handleLogout}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm rounded-md transition-all"
+                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm rounded-md transition-all"
               >
-                Logout
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
               </button>
             </>
           ) : (

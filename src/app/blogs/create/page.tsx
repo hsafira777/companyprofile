@@ -12,6 +12,10 @@ const CreatePostPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
+  const [postDate, setPostDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
   const [loading, setLoading] = useState(false);
 
   if (!isLogin || !user) {
@@ -28,6 +32,7 @@ const CreatePostPage = () => {
         content: content.trim(),
         author: `${user.firstname} ${user.lastname}`,
         tags: tags.trim(),
+        createdAt: new Date(postDate),
       };
 
       console.log("Sending to Backendless:", postPayload);
@@ -54,6 +59,7 @@ const CreatePostPage = () => {
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 border rounded-2xl shadow-md">
       <h2 className="text-2xl font-bold mb-4">Create New Blog Post</h2>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -78,6 +84,14 @@ const CreatePostPage = () => {
           className="border p-2 rounded"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
+        />
+
+        <input
+          type="date"
+          className="border p-2 rounded"
+          value={postDate}
+          onChange={(e) => setPostDate(e.target.value)}
+          required
         />
 
         <button
